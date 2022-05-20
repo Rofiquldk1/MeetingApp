@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.meeting:
                 startActivity(new Intent(this, TelemeetingActivity.class));
                 break;
-            case R.id.settings:
-                //startActivity(new Intent(this, TelemeetingActivity.class));
+            case R.id.plot:
+                startActivity(new Intent(this, PlotActivity.class));
                 break;
             case R.id.logout:
                 //FirebaseAuth.getInstance().signOut();
