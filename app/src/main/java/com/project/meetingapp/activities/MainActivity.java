@@ -1,47 +1,38 @@
 package com.project.meetingapp.activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.provider.Settings;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 import com.project.meetingapp.R;
-import com.project.meetingapp.adapters.UsersAdapter;
-import com.project.meetingapp.listener.UsersListener;
-import com.project.meetingapp.models.User;
 import com.project.meetingapp.utilities.Constants;
 import com.project.meetingapp.utilities.PreferenceManager;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements UsersListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle drawerToggle;
+    String drawerImageUrl, drawerUserName, drawerStatus ;
     private PreferenceManager preferenceManager;
-    private List<User> users;
-    private UsersAdapter usersAdapter;
-    private TextView textErrorMessage;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private ImageView imageConference;
-    private  int REQUEST_CODE_BATTERY_OPTIMIZATIONS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,81 +41,64 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        imageConference = findViewById(R.id.imageConference);
+        Toolbar toolbar = findViewById(R.id.main_page_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("HMS");
 
-        TextView textView = findViewById(R.id.textTitle);
-        textView.setText(String.format(
-                "%s %s",
-                preferenceManager.getString(Constants.KEY_FIRST_NAME),
-                preferenceManager.getString(Constants.KEY_LAST_NAME)
-        ));
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.header);
 
-        findViewById(R.id.textSignOut).setOnClickListener(view -> signOut());
+        //=======   drawer_header
+        View headerview = navigationView.getHeaderView(0);
+        ImageView drawerImage = headerview.findViewById(R.id.drawer_image);
+        TextView drawerUserTV = (TextView) headerview.findViewById(R.id.drawer_userName);
 
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                sendFCMTokenToDatabase(task.getResult());
+        Log.d("user","name1: "+drawerUserName+" "+ drawerStatus) ;
+        drawerUserTV.setText("Rofiqul Islam");
+        Picasso.get().load("https://m.cricbuzz.com/a/img/v1/192x192/i1/c170912/shakib-al-hasan.jpg")
+                .placeholder(R.drawable.profile_image)
+                .into(drawerImage);
+        /*headerview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ContactActivity.class);
+                startActivity(intent);
             }
-        });
+        });*/
 
-        RecyclerView usersRecyclerview = findViewById(R.id.recyclerViewUsers);
-        textErrorMessage = findViewById(R.id.textErrorMessage);
-
-        users = new ArrayList<>();
-        usersAdapter = new UsersAdapter(users, this);
-        usersRecyclerview.setAdapter(usersAdapter);
-
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this::getUsers);
-
-        getUsers();
-        checkForBatteryOptimizations();
+        //======  drawer_menu
+        navigationView.setNavigationItemSelectedListener(this);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.drawer_open,R.string.drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 
-    private void getUsers() {
-        swipeRefreshLayout.setRefreshing(true);
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_USERS)
-                .get()
-                .addOnCompleteListener(task -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    String myUsersId = preferenceManager.getString(Constants.KEY_USER_ID);
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        users.clear();
-                        for (QueryDocumentSnapshot documentSnapshot: task.getResult()) {
-                            if (myUsersId.equals(documentSnapshot.getId())) {
-                                continue;
-                            }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                            User user = new User();
-                            user.firstName  = documentSnapshot.getString(Constants.KEY_FIRST_NAME);
-                            user.lastName   = documentSnapshot.getString(Constants.KEY_LAST_NAME);
-                            user.email      = documentSnapshot.getString(Constants.KEY_EMAIL);
-                            user.token      = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
-                            users.add(user);
-                        }
+        closeDrawer();
 
-                        if (users.size() > 0) {
-                            usersAdapter.notifyDataSetChanged();
-                        } else {
-                            textErrorMessage.setText(String.format("%s", "No users available"));
-                            textErrorMessage.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        textErrorMessage.setText(String.format("%s", "No users available"));
-                        textErrorMessage.setVisibility(View.VISIBLE);
-                    }
-                });
-    }
 
-    private void sendFCMTokenToDatabase(String token) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        DocumentReference documentReference =
-                database.collection(Constants.KEY_COLLECTION_USERS).document(
-                        preferenceManager.getString(Constants.KEY_USER_ID)
-                );
-        documentReference.update(Constants.KEY_FCM_TOKEN, token)
-                .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to send token: "+e.getMessage(), Toast.LENGTH_SHORT).show());
+        switch (item.getItemId()){
+            case R.id.dashboard:
+                break;
+            case R.id.hospital_lm:
+                startActivity(new Intent(this, MapsActivity.class));
+                break;
+            case R.id.meeting:
+                startActivity(new Intent(this, TelemeetingActivity.class));
+                break;
+            case R.id.settings:
+                //startActivity(new Intent(this, TelemeetingActivity.class));
+                break;
+            case R.id.logout:
+                //FirebaseAuth.getInstance().signOut();
+                signOut();
+                break;
+        }
+
+        return false;
     }
 
     private void signOut() {
@@ -145,67 +119,18 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                 .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Unable to sign out", Toast.LENGTH_SHORT).show());
     }
 
-    @Override
-    public void initiateVideoMeeting(User user) {
-        if (user.token == null || user.token.trim().isEmpty()) {
-            Toast.makeText(this, user.firstName+ " " +user.lastName+ " is not available for meeting", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
-            intent.putExtra("user", user);
-            intent.putExtra("type", "video");
-            startActivity(intent);        }
+    private void closeDrawer() {
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+    private void openDrawer() {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override
-    public void initiateAudioMeeting(User user) {
-        if (user.token == null || user.token.trim().isEmpty()) {
-            Toast.makeText(this, user.firstName+ " " +user.lastName+ " is not available for meeting", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
-            intent.putExtra("user", user);
-            intent.putExtra("type", "audio");
-            startActivity(intent);
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            closeDrawer();
         }
-    }
-
-    @Override
-    public void onMultipleUsersAction(Boolean isMultipleUsersSelected) {
-        if (isMultipleUsersSelected) {
-            imageConference.setVisibility(View.VISIBLE);
-            imageConference.setOnClickListener(view -> {
-                Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
-                intent.putExtra("selectedUsers", new Gson().toJson(usersAdapter.getSelectedUsers()));
-                intent.putExtra("type", "video");
-                intent.putExtra("isMultiple", true);
-                startActivity(intent);
-            });
-        } else {
-            imageConference.setVisibility(View.GONE);
-        }
-    }
-
-    private void checkForBatteryOptimizations() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            if (!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Warning");
-                builder.setMessage("Battery optimization is enabled. It can interrupt running background services.");
-                builder.setPositiveButton("Disable", (dialogInterface, i) -> {
-                    Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                    startActivityForResult(intent, REQUEST_CODE_BATTERY_OPTIMIZATIONS);
-                });
-                builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
-                builder.create().show();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_BATTERY_OPTIMIZATIONS) {
-            checkForBatteryOptimizations();
-        }
+        super.onBackPressed();
     }
 }
