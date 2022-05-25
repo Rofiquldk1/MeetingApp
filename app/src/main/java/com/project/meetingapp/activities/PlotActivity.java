@@ -4,8 +4,12 @@ package com.project.meetingapp.activities;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -22,12 +26,25 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
 import com.project.meetingapp.MyMarkerView;
 import com.project.meetingapp.R;
+import com.project.meetingapp.RSAKeyPairGenerator;
+import com.project.meetingapp.RSAUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import android.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class PlotActivity extends AppCompatActivity {
     private LineChart mChart;
+    private static String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB";
+    private static String privateKey = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKAUZV+tjiNBKhlBZbKBnzeugpdYPhh5PbHanjV0aQ+LF7vetPYhbTiCVqA3a+Chmge44+prlqd3qQCYra6OYIe7oPVq4mETa1c/7IuSlKJgxC5wMqYKxYydb1eULkrs5IvvtNddx+9O/JlyM5sTPosgFHOzr4WqkVtQ71IkR+HrAgMBAAECgYAkQLo8kteP0GAyXAcmCAkA2Tql/8wASuTX9ITD4lsws/VqDKO64hMUKyBnJGX/91kkypCDNF5oCsdxZSJgV8owViYWZPnbvEcNqLtqgs7nj1UHuX9S5yYIPGN/mHL6OJJ7sosOd6rqdpg6JRRkAKUV+tmN/7Gh0+GFXM+ug6mgwQJBAO9/+CWpCAVoGxCA+YsTMb82fTOmGYMkZOAfQsvIV2v6DC8eJrSa+c0yCOTa3tirlCkhBfB08f8U2iEPS+Gu3bECQQCrG7O0gYmFL2RX1O+37ovyyHTbst4s4xbLW4jLzbSoimL235lCdIC+fllEEP96wPAiqo6dzmdH8KsGmVozsVRbAkB0ME8AZjp/9Pt8TDXD5LHzo8mlruUdnCBcIo5TMoRG2+3hRe1dHPonNCjgbdZCoyqjsWOiPfnQ2Brigvs7J4xhAkBGRiZUKC92x7QKbqXVgN9xYuq7oIanIM0nz/wq190uq0dh5Qtow7hshC/dSK3kmIEHe8z++tpoLWvQVgM538apAkBoSNfaTkDZhFavuiVl6L8cWCoDcJBItip8wKQhXwHp0O3HLg10OEd14M58ooNfpgt+8D8/8/2OOFaR0HzA+2Dm";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +56,52 @@ public class PlotActivity extends AppCompatActivity {
         mv.setChartView(mChart);
         mChart.setMarker(mv);
         renderData();
+
+
+        /*String encryptedString = null;
+        try {
+            encryptedString = Base64.encodeToString(RSAUtil.encrypt("Dhiraj is the author", publicKey)
+                    ,Base64.DEFAULT);
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        String decryptedString = RSAUtil.decrypt(encryptedString, privateKey);*/
+
+
+
+        /*RSAKeyPairGenerator keyPairGenerator = null;
+        try {
+            keyPairGenerator = new RSAKeyPairGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        assert keyPairGenerator != null;
+
+        byte[] byteArray = new byte[0];
+        byte[] byteArray2 = new byte[0];
+
+        try {
+            byteArray = keyPairGenerator.getPublicKey().getEncoded().toString().getBytes("UTF-16");
+            byteArray2 = keyPairGenerator.
+                    getPrivateKey().getEncoded().toString().getBytes("UTF-16");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String encodedString = Base64.encodeToString(byteArray,Base64.DEFAULT);
+        String encodedString2 = Base64.encodeToString(byteArray2,Base64.DEFAULT);*/
+
+        /*Log.d("pub",encodedString);
+        Log.d("pri",encodedString2);*/
+
     }
 
     public void renderData() {

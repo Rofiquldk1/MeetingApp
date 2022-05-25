@@ -9,6 +9,7 @@
         <entry key="..\:/MeetingApp/app/src/main/res/drawable/bg_splash_gradient.xml" value="0.2203125" />
         <entry key="..\:/MeetingApp/app/src/main/res/drawable/fade_blue.xml" value="0.2203125" />
         <entry key="..\:/MeetingApp/app/src/main/res/drawable/ic_baseline_account_box_24.xml" value="0.2203125" />
+        <entry key="..\:/MeetingApp/app/src/main/res/drawable/rounded_edge.xml" value="0.2203125" />
         <entry key="..\:/MeetingApp/app/src/main/res/layout/activity_main.xml" value="0.19610507246376813" />
         <entry key="..\:/MeetingApp/app/src/main/res/layout/activity_maps.xml" value="0.19610507246376813" />
         <entry key="..\:/MeetingApp/app/src/main/res/layout/activity_plot.xml" value="0.19202898550724637" />
@@ -21,7 +22,9 @@
         <entry key="..\:/MeetingApp/app/src/main/res/layout/app_bar_layout.xml" value="0.19610507246376813" />
         <entry key="..\:/MeetingApp/app/src/main/res/layout/custom_marker_view.xml" value="0.1743659420289855" />
         <entry key="..\:/MeetingApp/app/src/main/res/layout/drawer_header.xml" value="0.19610507246376813" />
+        <entry key="..\:/MeetingApp/app/src/main/res/layout/gridview_row.xml" value="0.25" />
         <entry key="..\:/MeetingApp/app/src/main/res/menu/drawer_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/MeetingApp/app/src/main/res/xml/network_security_config.xml" value="0.1539855072463768" />
       </map>
     </option>
   </component>
