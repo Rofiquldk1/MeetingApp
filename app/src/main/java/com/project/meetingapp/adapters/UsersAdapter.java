@@ -72,8 +72,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         }
 
         void setUserData(User user) {
-            textFirstChar.setText(user.firstName.substring(0, 1));
-            textUsername.setText(String.format("%s %s", user.firstName, user.lastName));
+            textFirstChar.setText(user.fullName.substring(0, 1));
+            textUsername.setText(user.fullName);
             textEmail.setText(user.email);
             imageAudioMeeting.setOnClickListener(view -> usersListener.initiateAudioMeeting(user));
             imageVideoMeeting.setOnClickListener(view -> usersListener.initiateVideoMeeting(user));

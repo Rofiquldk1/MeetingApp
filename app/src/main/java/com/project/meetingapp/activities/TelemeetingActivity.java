@@ -53,11 +53,7 @@ public class TelemeetingActivity extends AppCompatActivity implements UsersListe
         imageConference = findViewById(R.id.imageConference);
 
         TextView textView = findViewById(R.id.textTitle);
-        textView.setText(String.format(
-                "%s %s",
-                preferenceManager.getString(Constants.KEY_FIRST_NAME),
-                preferenceManager.getString(Constants.KEY_LAST_NAME)
-        ));
+        textView.setText( preferenceManager.getString(Constants.KEY_FULL_NAME));
 
         findViewById(R.id.textSignOut).setOnClickListener(view -> signOut());
 
@@ -97,8 +93,7 @@ public class TelemeetingActivity extends AppCompatActivity implements UsersListe
                             }
 
                             User user = new User();
-                            user.firstName  = documentSnapshot.getString(Constants.KEY_FIRST_NAME);
-                            user.lastName   = documentSnapshot.getString(Constants.KEY_LAST_NAME);
+                            user.fullName  = documentSnapshot.getString(Constants.KEY_FULL_NAME);
                             user.email      = documentSnapshot.getString(Constants.KEY_EMAIL);
                             user.token      = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
                             users.add(user);
@@ -148,7 +143,7 @@ public class TelemeetingActivity extends AppCompatActivity implements UsersListe
     @Override
     public void initiateVideoMeeting(User user) {
         if (user.token == null || user.token.trim().isEmpty()) {
-            Toast.makeText(this, user.firstName+ " " +user.lastName+ " is not available for meeting", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, user.fullName+ " " +" is not available for meeting", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
             intent.putExtra("user", user);
@@ -159,7 +154,7 @@ public class TelemeetingActivity extends AppCompatActivity implements UsersListe
     @Override
     public void initiateAudioMeeting(User user) {
         if (user.token == null || user.token.trim().isEmpty()) {
-            Toast.makeText(this, user.firstName+ " " +user.lastName+ " is not available for meeting", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, user.fullName+""+ " is not available for meeting", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(getApplicationContext(), OutgoingInvitationActivity.class);
             intent.putExtra("user", user);

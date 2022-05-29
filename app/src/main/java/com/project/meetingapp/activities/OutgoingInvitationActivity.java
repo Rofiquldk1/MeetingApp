@@ -75,8 +75,8 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         User user = (User) getIntent().getSerializableExtra("user");
 
         if (user != null) {
-            textFirstChar.setText(user.firstName.substring(0, 1));
-            textUsername.setText(String.format("%s %s", user.firstName, user.lastName));
+            textFirstChar.setText(user.fullName.substring(0, 1));
+            textUsername.setText(user.fullName);
             textEmail.setText(user.email);
         }
 
@@ -129,7 +129,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
                 StringBuilder userNames = new StringBuilder();
                 for (int i=0; i < receivers.size(); i++) {
                     tokens.put(receivers.get(i).token);
-                    userNames.append(receivers.get(i).firstName).append(" ").append(receivers.get(i).lastName).append("\n");
+                    userNames.append(receivers.get(i).fullName).append("\n");
                 }
 
                 textFirstChar.setVisibility(View.GONE);
@@ -142,8 +142,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
 
             data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION);
             data.put(Constants.REMOTE_MSG_MEETING_TYPE, meetingType);
-            data.put(Constants.KEY_FIRST_NAME, preferenceManager.getString(Constants.KEY_FIRST_NAME));
-            data.put(Constants.KEY_LAST_NAME, preferenceManager.getString(Constants.KEY_LAST_NAME));
+            data.put(Constants.KEY_FULL_NAME, preferenceManager.getString(Constants.KEY_FULL_NAME));
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken);
 

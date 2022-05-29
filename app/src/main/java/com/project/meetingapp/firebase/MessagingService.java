@@ -31,12 +31,8 @@ public class MessagingService extends FirebaseMessagingService {
                         remoteMessage.getData().get(Constants.REMOTE_MSG_MEETING_TYPE)
                 );
                 intent.putExtra(
-                        Constants.KEY_FIRST_NAME,
-                        remoteMessage.getData().get(Constants.KEY_FIRST_NAME)
-                );
-                intent.putExtra(
-                        Constants.KEY_LAST_NAME,
-                        remoteMessage.getData().get(Constants.KEY_LAST_NAME)
+                        Constants.KEY_FULL_NAME,
+                        remoteMessage.getData().get(Constants.KEY_FULL_NAME)
                 );
                 intent.putExtra(
                         Constants.KEY_EMAIL,

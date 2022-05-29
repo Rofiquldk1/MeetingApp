@@ -4,8 +4,11 @@ import java.util.HashMap;
 
 public class Constants {
     public static final String KEY_COLLECTION_USERS = "users";
-    public static final String KEY_FIRST_NAME = "first_name";
-    public static final String KEY_LAST_NAME = "last_name";
+    public static final String KEY_FULL_NAME = "full_name";
+    public static final String KEY_MOBILE_NUM = "mobile_number";
+    public static final String KEY_DATE_OF_BIRTH = "date_of_birth";
+    public static final String KEY_SEX = "sex";
+    public static final String KEY_USER_TYPE = "user_type";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_USER_ID = "user_id";

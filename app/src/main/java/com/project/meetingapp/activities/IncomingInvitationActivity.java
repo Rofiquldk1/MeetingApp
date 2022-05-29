@@ -52,16 +52,12 @@ public class IncomingInvitationActivity extends AppCompatActivity {
         TextView textUserName = findViewById(R.id.textUserName);
         TextView textEmail = findViewById(R.id.textEmail);
 
-        String firstName = getIntent().getStringExtra(Constants.KEY_FIRST_NAME);
-        if (firstName != null) {
-            textFirstChar.setText(firstName.substring(0, 1));
+        String fullName = getIntent().getStringExtra(Constants.KEY_FULL_NAME);
+        if (fullName != null) {
+            textFirstChar.setText(fullName.substring(0, 1));
         }
 
-        textUserName.setText(String.format(
-                "%s %s",
-                firstName,
-                getIntent().getStringExtra(Constants.KEY_LAST_NAME)
-        ));
+        textUserName.setText(fullName);
 
         textEmail.setText(getIntent().getStringExtra(Constants.KEY_EMAIL));
 
